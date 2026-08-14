@@ -7,8 +7,8 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/lib/useAuth";
 
-const FREE_MAX_PAGES = 5;
-const FREE_MAX_DEPTH = 1;
+const MAX_PAGES = 20;
+const MAX_DEPTH = 2;
 
 export default function Home() {
   const { user, loading, login } = useAuth();
@@ -19,7 +19,9 @@ export default function Home() {
 
   function normalizeUrl(input) {
     try {
-      const withProtocol = /^https?:\/\//i.test(input) ? input : `https://${input}`;
+      const withProtocol = /^https?:\/\//i.test(input)
+        ? input
+        : `https://${input}`;
       const parsed = new URL(withProtocol);
       return parsed.toString();
     } catch {
@@ -58,6 +60,12 @@ export default function Home() {
         createdAt: serverTimestamp(),
       });
 
+      fetch("/api/crawl", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId: jobRef.id }),
+      });
+
       router.push(`/dashboard?job=${jobRef.id}`);
     } catch (err) {
       console.error(err);
@@ -72,8 +80,8 @@ export default function Home() {
       <div style={styles.card}>
         <h1 style={styles.h1}>Website downloader</h1>
         <p style={styles.sub}>
-          Paste a link. We&apos;ll crawl the pages, pull the assets, and pack
-          it all into a ZIP you can use offline.
+          Paste a link. We&apos;ll crawl the pages, pull the assets, and pack it
+          all into a ZIP you can use offline.
         </p>
 
         <form onSubmit={handleSubmit} style={styles.form}>
@@ -85,15 +93,23 @@ export default function Home() {
             style={styles.input}
             disabled={submitting || loading}
           />
-          <button type="submit" style={styles.button} disabled={submitting || loading}>
-            {submitting ? "Starting…" : user ? "Download" : "Sign in & download"}
+          <button
+            type="submit"
+            style={styles.button}
+            disabled={submitting || loading}
+          >
+            {submitting
+              ? "Starting…"
+              : user
+                ? "Download"
+                : "Sign in & download"}
           </button>
         </form>
 
         {error && <p style={styles.error}>{error}</p>}
 
         <p style={styles.hint}>
-          Free tier: up to {FREE_MAX_PAGES} pages, {FREE_MAX_DEPTH} level deep.
+          Up to {MAX_PAGES} pages, {MAX_DEPTH} levels deep.
         </p>
       </div>
     </main>
