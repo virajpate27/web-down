@@ -12,7 +12,7 @@ const ASSET_TAGS = [
   { selector: "script[src]", attr: "src" },
   { selector: "img[src]", attr: "src" },
 ];
-
+ 
 export async function POST(req) {
   const { jobId } = await req.json();
   if (!jobId) {
