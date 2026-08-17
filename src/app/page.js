@@ -7,8 +7,8 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/lib/useAuth";
 
-const MAX_PAGES = 20;
-const MAX_DEPTH = 2;
+const FREE_MAX_PAGES  = 20;
+const FREE_MAX_DEPTH = 2;
 
 export default function Home() {
   const { user, loading, login } = useAuth();
@@ -109,7 +109,7 @@ export default function Home() {
         {error && <p style={styles.error}>{error}</p>}
 
         <p style={styles.hint}>
-          Up to {MAX_PAGES} pages, {MAX_DEPTH} levels deep.
+          Up to {FREE_MAX_PAGES} pages, {FREE_MAX_DEPTH} levels deep.
         </p>
       </div>
     </main>
