@@ -1,11 +1,12 @@
 // app/api/crawl/route.js
 import { NextResponse } from "next/server";
+import { put } from "@vercel/blob";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import archiver from "archiver";
 import { PassThrough } from "stream";
 import path from "path";
-import { adminDb, adminBucket } from "@/lib/firebaseAdmin";
+
 
 const ASSET_TAGS = [
   { selector: "link[rel=stylesheet]", attr: "href" },
@@ -58,9 +59,15 @@ export async function POST(req) {
 
     await Promise.allSettled(assetTasks);
 
-    await adminBucket.file(`${jobPrefix}/index.html`).save($.html(), {
-      contentType: "text/html",
-    });
+   const htmlLocalPath =
+  pageUrl === job.sourceUrl ? "index.html" : `pages/${pageId(pageUrl)}.html`;
+
+  await put(`${jobPrefix}/${htmlLocalPath}`, $.html(), {
+  access: "public",
+  contentType: "text/html",
+  addRandomSuffix: false,
+  allowOverwrite: true,
+});
 
     await jobRef.update({ pagesCrawled: 1, status: "zipping" });
 
