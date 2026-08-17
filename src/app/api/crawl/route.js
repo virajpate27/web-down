@@ -38,7 +38,7 @@ export async function POST(req) {
     });
 
     const $ = cheerio.load(html);
-    const jobPrefix = `jobs/${jobId}`;
+    const jobPrefix = `jobs/${jobId}`; 
     const assetTasks = [];
 
     for (const { selector, attr } of ASSET_TAGS) {
