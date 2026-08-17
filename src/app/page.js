@@ -53,7 +53,7 @@ export default function Home() {
         maxPages: FREE_MAX_PAGES,
         maxDepth: FREE_MAX_DEPTH,
         pagesFound: 0,
-        pagesCrawled: 0,
+        pagesCrawled: 0, 
         zipPath: null,
         downloadUrl: null,
         error: null,
